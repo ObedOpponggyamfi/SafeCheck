@@ -1,0 +1,11 @@
+# Normalise line endings: text files use LF in the repository.
+* text=auto eol=lf
+
+# Treat common binary assets as binary (never normalise).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.db binary
+*.xlsx binary
+*.pdf binary

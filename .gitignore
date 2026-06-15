@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Local offline data (do not commit runtime data) ---
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/photos/
+
+# --- Generated reports ---
+reports_output/
+
+# --- Flet build artifacts ---
+.flet/
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+
+# --- OMC working directory ---
+.omc/

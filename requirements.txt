@@ -1,0 +1,21 @@
+# SafeCheck Offline — Python dependencies
+# Install with:  python -m pip install -r requirements.txt
+
+# --- Field application (Flet desktop / mobile) ---
+flet>=0.24            # Cross-platform UI (Windows desktop now, Android later)
+flet-desktop>=0.24    # Desktop (Windows) client for Flet
+SQLAlchemy>=2.0       # ORM / database management
+passlib>=1.7.4        # Password hashing framework
+bcrypt>=4.0,<4.1      # Bcrypt backend (pinned <4.1 for Passlib compatibility)
+Pillow>=10.0          # Photograph compression
+truststore>=0.9       # Use the OS trust store for TLS (corporate-proxy networks)
+
+# --- Synchronisation client/server (Phase Two) ---
+httpx>=0.27           # Field app <-> server communication
+fastapi>=0.110        # Synchronisation server
+uvicorn[standard]>=0.29   # ASGI server for FastAPI
+
+# --- Reports (Phase Two) ---
+pandas>=2.1           # Tabular data for Excel registers
+openpyxl>=3.1         # Excel (.xlsx) writer
+reportlab>=4.0        # PDF inspection reports
