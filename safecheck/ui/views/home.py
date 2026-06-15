@@ -11,6 +11,15 @@ from safecheck.ui import theme
 CHECKLIST_ICONS = {
     "Light Vehicle Inspection": ft.Icons.DIRECTIONS_CAR,
     "Visitor Vehicle Inspection": ft.Icons.AIRPORT_SHUTTLE,
+    "Heavy Vehicle Inspection": ft.Icons.LOCAL_SHIPPING,
+    "Excavator Inspection": ft.Icons.CONSTRUCTION,
+    "Wheel Loader Inspection": ft.Icons.AGRICULTURE,
+    "Bulldozer Inspection": ft.Icons.TERRAIN,
+    "Grader Inspection": ft.Icons.ENGINEERING,
+    "Drill Rig Inspection": ft.Icons.HARDWARE,
+    "Forklift Inspection": ft.Icons.FORKLIFT,
+    "Crane Inspection": ft.Icons.PRECISION_MANUFACTURING,
+    "Generator Inspection": ft.Icons.BOLT,
 }
 
 
