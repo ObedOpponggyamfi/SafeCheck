@@ -17,9 +17,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 PHOTOS_DIR = DATA_DIR / "photos"
 
+# Generated PDF / Excel reports are written here.
+REPORTS_DIR = BASE_DIR / "reports_output"
+
 # Create runtime directories on import so the rest of the app can assume them.
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
+REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # SQLite database used by the field application (offline-first store).
 DATABASE_PATH = DATA_DIR / "safecheck.db"

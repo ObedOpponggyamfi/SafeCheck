@@ -49,7 +49,7 @@ SafeCheck/
 │   ├── config.py           # Paths and runtime constants
 │   ├── core/               # Database engine, ORM models, enums, security
 │   ├── data/               # Checklist definitions + demo-data seeding
-│   ├── services/           # Business logic (auth, inspections, findings, sync)
+│   ├── services/           # Business logic (auth, inspections, findings, sync, analytics, reports)
 │   └── ui/                 # Flet views (login, home, inspection, sync, history)
 ├── server/                 # FastAPI synchronisation server (central SQLite DB)
 ├── tests/                  # Unit + server tests (14 tests)
@@ -120,18 +120,24 @@ All demo accounts use the password **`safecheck`**.
 - Automatic findings for every failed item
 - Pending Sync screen and Inspection History
 
-**Phase Two (in progress)**
+**Phase Two (complete)**
 
 - ✅ Machinery checklists — Heavy Vehicle, Excavator, Wheel Loader, Bulldozer,
   Grader, Drill Rig, Forklift, Crane, Generator (9 types)
 - ✅ FastAPI synchronisation server — auth, checklist/asset download, idempotent
   inspection upload, photo upload, confirmation, history, findings endpoints
-- ⏳ Findings workflow screen + corrective actions
-- ⏳ Dashboards
-- ⏳ PDF / Excel reports
+- ✅ Findings workflow screen + corrective actions
+- ✅ Dashboard with results / sync / findings analytics
+- ✅ PDF inspection report + Excel register, No-Go, failed-items and
+  asset-history reports (generated from the Inspection History screen)
+
+## Reports
+
+From the **Inspection History** screen you can export a per-inspection **PDF**
+report or four Excel reports (register, No Go, failed items, asset history).
+Files are written to `reports_output/` and opened automatically.
 
 ## Status
 
-✅ Phase One complete. 🚧 Phase Two in progress (machinery checklists and the
-sync server are done). The most important requirement is **simplicity for field
-users**.
+✅ Phase One and Phase Two complete (19 automated tests). The most important
+requirement remains **simplicity for field users**.
