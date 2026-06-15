@@ -51,8 +51,10 @@ SafeCheck/
 │   ├── data/               # Checklist definitions + demo-data seeding
 │   ├── services/           # Business logic (auth, inspections, findings, sync)
 │   └── ui/                 # Flet views (login, home, inspection, sync, history)
-├── tests/                  # Unit tests for inspection logic
+├── server/                 # FastAPI synchronisation server (central SQLite DB)
+├── tests/                  # Unit + server tests (14 tests)
 ├── run_app.py              # Launch the field application
+├── run_server.py           # Launch the synchronisation server (port 8077)
 ├── requirements.txt
 └── README.md
 ```
@@ -74,6 +76,19 @@ python -m pip install -r requirements.txt
 # 3. Launch the field application (creates and seeds the local database)
 python run_app.py
 ```
+
+### Synchronisation server (optional)
+
+The field app works fully offline; submitted inspections wait in the **Pending
+Sync** queue. To sync them to the central server, start it in a second terminal:
+
+```powershell
+python run_server.py        # serves on http://127.0.0.1:8077
+```
+
+Then press **Sync All** (or **Retry**) on the Pending Sync screen. Uploads are
+idempotent by inspection UUID, so re-syncing never creates duplicates. API docs
+are auto-generated at http://127.0.0.1:8077/docs.
 
 ### Demo users
 
@@ -105,14 +120,18 @@ All demo accounts use the password **`safecheck`**.
 - Automatic findings for every failed item
 - Pending Sync screen and Inspection History
 
-**Phase Two (planned)**
+**Phase Two (in progress)**
 
-- Remaining machinery checklists (excavator, loader, crane, …)
-- FastAPI synchronisation server + real upload/confirm flow
-- Findings workflow, dashboards
-- PDF / Excel reports
+- ✅ Machinery checklists — Heavy Vehicle, Excavator, Wheel Loader, Bulldozer,
+  Grader, Drill Rig, Forklift, Crane, Generator (9 types)
+- ✅ FastAPI synchronisation server — auth, checklist/asset download, idempotent
+  inspection upload, photo upload, confirmation, history, findings endpoints
+- ⏳ Findings workflow screen + corrective actions
+- ⏳ Dashboards
+- ⏳ PDF / Excel reports
 
 ## Status
 
-🚧 Phase One under active development. The most important requirement is
-**simplicity for field users**.
+✅ Phase One complete. 🚧 Phase Two in progress (machinery checklists and the
+sync server are done). The most important requirement is **simplicity for field
+users**.

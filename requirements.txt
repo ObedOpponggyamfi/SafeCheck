@@ -14,6 +14,7 @@ truststore>=0.9       # Use the OS trust store for TLS (corporate-proxy networks
 httpx>=0.27           # Field app <-> server communication
 fastapi>=0.110        # Synchronisation server
 uvicorn[standard]>=0.29   # ASGI server for FastAPI
+python-multipart>=0.0.9   # Photograph (multipart/form-data) uploads
 
 # --- Reports (Phase Two) ---
 pandas>=2.1           # Tabular data for Excel registers

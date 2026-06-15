@@ -31,7 +31,8 @@ PHOTO_JPEG_QUALITY = 70      # 0-95
 
 # Synchronisation server (Phase Two). The field app stays fully functional even
 # when this server is unreachable — inspections simply wait in the sync queue.
-SYNC_SERVER_URL = "http://127.0.0.1:8000"
+# Port 8077 is dedicated to SafeCheck to avoid clashing with other local servers.
+SYNC_SERVER_URL = "http://127.0.0.1:8077"
 SYNC_TIMEOUT_SECONDS = 5
 
 # Default password applied to every seeded demo user.

@@ -58,17 +58,36 @@ def list_pending(session: Session) -> list[models.Inspection]:
 
 
 def _build_payload(inspection: models.Inspection) -> dict:
-    """Serialise an inspection for upload (used by the Phase Two server)."""
+    """Serialise an inspection for upload to the sync server.
+
+    The payload is self-describing (question text, inspector, asset, etc.) so the
+    central server can store a complete record even though its primary-key ids
+    differ from the field device's.
+    """
+    template = inspection.template
     return {
         "uuid": inspection.uuid,
-        "template": inspection.template.name if inspection.template else None,
+        "template_name": template.name if template else "",
+        "result_mode": template.result_mode if template else "standard",
+        "inspector_username": inspection.inspector.username if inspection.inspector else None,
+        "inspector_name": inspection.inspector.full_name if inspection.inspector else None,
+        "site_name": inspection.site.name if inspection.site else None,
         "asset_number": inspection.asset_number_text,
-        "result": inspection.result,
+        "registration": inspection.registration_text,
+        "department": inspection.department_text or inspection.host_department,
+        "contractor": inspection.contractor_text or inspection.contractor_company,
         "general_comment": inspection.general_comment,
+        "start_time": inspection.start_time.isoformat() if inspection.start_time else None,
         "completion_time": inspection.completion_time.isoformat()
         if inspection.completion_time else None,
+        "result": inspection.result,
         "responses": [
-            {"question_id": r.question_id, "answer": r.answer, "comment": r.comment}
+            {
+                "question_text": r.question.text if r.question else "",
+                "answer": r.answer,
+                "comment": r.comment,
+                "is_no_go": r.question.is_no_go if r.question else False,
+            }
             for r in inspection.responses
         ],
     }
