@@ -86,6 +86,7 @@ def main() -> int:
     checks = [
         ("login", app.show_login),
         ("home", app.show_home),
+        ("dashboard", app.show_dashboard),
         ("pending_sync", app.show_pending_sync),
         ("history", app.show_history),
         ("profile", app.show_profile),

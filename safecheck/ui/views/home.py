@@ -64,6 +64,21 @@ def build_home(app, message=None) -> ft.Control:
         ft.Container(height=4),
         ft.Text("Overview", size=15, weight=ft.FontWeight.BOLD, color=theme.TEXT),
         summary,
+        theme.card(
+            ft.Row(
+                [
+                    ft.Icon(ft.Icons.BAR_CHART, color=theme.PRIMARY, size=26),
+                    ft.Column(
+                        [ft.Text("Dashboard", size=14, weight=ft.FontWeight.BOLD, color=theme.TEXT),
+                         ft.Text("Results, sync and findings overview", size=12, color=theme.MUTED)],
+                        spacing=2, expand=True,
+                    ),
+                    ft.Icon(ft.Icons.CHEVRON_RIGHT, color=theme.MUTED, size=24),
+                ],
+                vertical_alignment=ft.CrossAxisAlignment.CENTER, spacing=14,
+            ),
+            on_click=lambda e: app.show_dashboard(),
+        ),
         ft.Container(height=8),
         ft.Text("Start an inspection", size=15, weight=ft.FontWeight.BOLD, color=theme.TEXT),
         *checklist_cards,

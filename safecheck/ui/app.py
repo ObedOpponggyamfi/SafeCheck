@@ -10,6 +10,7 @@ import flet as ft
 
 from safecheck.config import APP_NAME, DATA_DIR
 from safecheck.ui import theme
+from safecheck.ui.views.dashboard import build_dashboard
 from safecheck.ui.views.findings import build_finding_detail, build_findings
 from safecheck.ui.views.history import build_history
 from safecheck.ui.views.home import build_home
@@ -110,6 +111,9 @@ class SafeCheckApp:
 
     def show_history(self, message=None) -> None:
         self._render(build_history(self, message), active="history")
+
+    def show_dashboard(self, message=None) -> None:
+        self._render(build_dashboard(self, message), active="home")
 
     def show_findings(self, message=None, status=None) -> None:
         self._render(build_findings(self, message, status), active="findings")
