@@ -10,6 +10,7 @@ import flet as ft
 
 from safecheck.config import APP_NAME, DATA_DIR
 from safecheck.ui import theme
+from safecheck.ui.views.findings import build_finding_detail, build_findings
 from safecheck.ui.views.history import build_history
 from safecheck.ui.views.home import build_home
 from safecheck.ui.views.inspection import InspectionScreen
@@ -110,6 +111,12 @@ class SafeCheckApp:
     def show_history(self, message=None) -> None:
         self._render(build_history(self, message), active="history")
 
+    def show_findings(self, message=None, status=None) -> None:
+        self._render(build_findings(self, message, status), active="findings")
+
+    def show_finding_detail(self, finding_id: int, message=None) -> None:
+        self._render(build_finding_detail(self, finding_id, message), active="findings")
+
     def show_profile(self, message=None) -> None:
         self._render(build_profile(self, message), active="profile")
 
@@ -123,6 +130,7 @@ class SafeCheckApp:
             ("home", "Home", ft.Icons.HOME, self.show_home),
             ("pending", "Pending", ft.Icons.SYNC, self.show_pending_sync),
             ("history", "History", ft.Icons.HISTORY, self.show_history),
+            ("findings", "Findings", ft.Icons.WARNING_AMBER, self.show_findings),
             ("profile", "Profile", ft.Icons.PERSON, self.show_profile),
         ]
         cells = []

@@ -14,14 +14,29 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import flet as ft
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from safecheck.core import models
 from safecheck.core.database import SessionLocal, init_db
 from safecheck.data.seed import seed_all
-from safecheck.services import auth_service
+from safecheck.services import auth_service, finding_service, inspection_service
 from safecheck.ui.app import SafeCheckApp
 from safecheck.ui.views.inspection import InspectionScreen
+
+
+def _cleanup_inspections(ids):
+    """Delete smoke-created inspections and their dependents (FK-safe)."""
+    with SessionLocal() as session:
+        for insp_id in ids:
+            session.execute(delete(models.CorrectiveAction).where(
+                models.CorrectiveAction.finding_id.in_(
+                    select(models.Finding.id).where(models.Finding.inspection_id == insp_id))))
+            session.execute(delete(models.Finding).where(models.Finding.inspection_id == insp_id))
+            session.execute(delete(models.SyncQueue).where(models.SyncQueue.inspection_id == insp_id))
+            obj = session.get(models.Inspection, insp_id)
+            if obj:
+                session.delete(obj)  # cascades responses + photos
+        session.commit()
 
 
 class StubPage:
@@ -87,11 +102,14 @@ def main() -> int:
             print(f"  FAIL  build {name}")
             traceback.print_exc()
 
+    created_ids: list[int] = []
+
     # Inspection screens (both result modes), built and closed cleanly.
     for name, tid in [("light_vehicle", lv_id), ("visitor_vehicle", visitor_id)]:
         try:
             screen = InspectionScreen(app, tid)
             screen.build()
+            created_ids.append(screen.inspection.id)
             # Exercise a couple of interactions that don't need a live page.
             first_q = screen.questions[0]
             screen._on_answer(first_q.id, "No")          # opens failure panel
@@ -102,6 +120,34 @@ def main() -> int:
             failures += 1
             print(f"  FAIL  build inspection:{name}")
             traceback.print_exc()
+
+    # Findings list + detail (submit an inspection to raise a finding, then build).
+    try:
+        with SessionLocal() as session:
+            user = auth_service.authenticate(session, "officer1", "safecheck")
+            insp = inspection_service.start_inspection(session, lv_id, user.id)
+            asset = inspection_service.list_assets_for_template(
+                session, inspection_service.get_template(session, lv_id))[0]
+            inspection_service.set_asset(session, insp, asset)
+            questions = inspection_service.active_questions(session, lv_id)
+            for q in questions:
+                inspection_service.record_response(session, insp, q.id, "Yes")
+            no_go = next(q for q in questions if q.is_no_go)
+            inspection_service.record_response(session, insp, no_go.id, "No", "smoke comment")
+            inspection_service.submit_inspection(session, insp)
+            created_ids.append(insp.id)
+            finding_id = finding_service.list_findings(session, inspector_id=user.id)[0].id
+        app.show_findings()
+        assert page.controls, "findings list produced no controls"
+        app.show_finding_detail(finding_id)
+        assert page.controls, "finding detail produced no controls"
+        print("  PASS  build findings + detail")
+    except Exception:  # noqa: BLE001
+        failures += 1
+        print("  FAIL  build findings + detail")
+        traceback.print_exc()
+
+    _cleanup_inspections(created_ids)  # leave the database as we found it
 
     print(f"\n{'ALL UI SCREENS BUILD' if not failures else f'{failures} FAILURE(S)'}")
     return 1 if failures else 0
