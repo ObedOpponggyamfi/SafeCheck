@@ -51,7 +51,6 @@ SafeCheck/
 │   ├── data/               # Checklist definitions + demo-data seeding
 │   ├── services/           # Business logic (auth, inspections, findings, sync)
 │   └── ui/                 # Flet views (login, home, inspection, sync, history)
-├── server/                 # FastAPI synchronisation server (Phase Two scaffold)
 ├── tests/                  # Unit tests for inspection logic
 ├── run_app.py              # Launch the field application
 ├── requirements.txt
