@@ -146,6 +146,32 @@ def test_cannot_submit_without_asset():
     assert any("vehicle or machine" in e.lower() for e in errors)
 
 
+def test_progress_updates_after_early_responses_access():
+    """Regression: the field screen reads progress on build (loading the
+    responses collection while empty); answers recorded afterwards must still be
+    counted, and the inspection must remain submittable."""
+    session = _fresh_session()
+    user = auth_service.authenticate(session, "officer1", "safecheck")
+    template = _template(session, "Light Vehicle Inspection")
+    asset = inspection_service.list_assets_for_template(session, template)[0]
+    insp = inspection_service.start_inspection(session, template.id, user.id)
+    inspection_service.set_asset(session, insp, asset)
+
+    questions = inspection_service.active_questions(session, insp.template_id)
+    total = len(questions)
+    # Simulate the screen build reading progress before any answer exists.
+    assert inspection_service.progress(session, insp) == (0, total)
+
+    for index, question in enumerate(questions, start=1):
+        inspection_service.record_response(session, insp, question.id, AnswerType.YES.value)
+        # Before the fix this stayed at 0 because of the stale cached collection.
+        assert inspection_service.progress(session, insp)[0] == index
+
+    assert inspection_service.validate_submission(session, insp) == []
+    inspection_service.submit_inspection(session, insp)
+    assert insp.result == InspectionResult.FIT_FOR_USE.value
+
+
 def _run_all():
     """Tiny runner so the file works without pytest installed."""
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]

@@ -137,6 +137,10 @@ def record_response(
     if comment is not None:
         response.comment = comment
     session.commit()
+    # The screen keeps one long-lived session (expire_on_commit=False), so the
+    # cached ``inspection.responses`` collection must be refreshed or progress,
+    # result and validation would keep reading a stale (often empty) list.
+    session.expire(inspection, ["responses"])
     return response
 
 
@@ -156,6 +160,7 @@ def set_comment(
     if response is not None:
         response.comment = comment
         session.commit()
+        session.expire(inspection, ["responses"])
 
 
 def responses_map(session: Session, inspection: models.Inspection) -> dict[int, models.InspectionResponse]:
@@ -249,6 +254,7 @@ def save_draft(session: Session, inspection: models.Inspection) -> None:
 
 def submit_inspection(session: Session, inspection: models.Inspection) -> models.Inspection:
     """Validate, finalise, raise findings and queue the inspection for sync."""
+    session.expire(inspection, ["responses"])  # always validate against fresh answers
     errors = validate_submission(session, inspection)
     if errors:
         raise InspectionValidationError(errors)
