@@ -232,10 +232,16 @@ class InspectionScreen:
         self.page.update()
 
     def _on_add_photo(self, question_id):
+        # FilePicker.pick_files is async in Flet 0.85, so run the work as a task
+        # on the page's event loop rather than calling it synchronously.
+        self.page.run_task(self._pick_and_store_photo, question_id)
+
+    async def _pick_and_store_photo(self, question_id):
         try:
-            files = self.app.file_picker.pick_files(
-                dialog_title="Select a photograph", allow_multiple=False,
-                allowed_extensions=["jpg", "jpeg", "png", "webp", "bmp"],
+            files = await self.app.file_picker.pick_files(
+                dialog_title="Select a photograph",
+                file_type=ft.FilePickerFileType.IMAGE,
+                allow_multiple=False,
             )
         except Exception as exc:  # noqa: BLE001 — show any picker failure to the user
             self._show_banner("error", f"Could not open file picker: {exc}")
