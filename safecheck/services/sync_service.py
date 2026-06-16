@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import httpx
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from safecheck.config import SYNC_SERVER_URL, SYNC_TIMEOUT_SECONDS
@@ -136,3 +136,19 @@ def sync_all(session: Session) -> tuple[int, int]:
         else:
             failed += 1
     return succeeded, failed
+
+
+def server_reachable(timeout: float = 1.5) -> bool:
+    """Quick health probe of the sync server (used for the online/offline badge)."""
+    try:
+        return httpx.get(f"{SYNC_SERVER_URL}/health", timeout=timeout).status_code == 200
+    except Exception:  # noqa: BLE001 — any failure means "offline"
+        return False
+
+
+def last_sync_time(session: Session):
+    """Most recent successful synchronisation timestamp, or ``None``."""
+    return session.scalar(
+        select(func.max(models.SyncQueue.last_attempt_at))
+        .where(models.SyncQueue.status == SyncStatus.SYNCED.value)
+    )

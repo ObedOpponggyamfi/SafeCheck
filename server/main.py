@@ -17,11 +17,13 @@ from __future__ import annotations
 
 import uuid as uuidlib
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Response, UploadFile
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from safecheck import config
 from safecheck.core import models
 from safecheck.data.seed import seed_all
 from safecheck.services import auth_service
@@ -147,15 +149,25 @@ async def upload_photo(inspection_uuid: str, file: UploadFile,
     if inspection is None:
         raise HTTPException(status_code=404, detail="Inspection not found")
 
-    target_dir = SERVER_PHOTOS_DIR / inspection_uuid
+    # Validate the upload: restricted types + size cap, and a safe generated
+    # filename so a malicious client name can never escape the storage folder.
+    ext = Path(file.filename or "").suffix.lower()
+    if ext not in config.ALLOWED_PHOTO_EXTENSIONS:
+        raise HTTPException(status_code=415, detail="Unsupported photo type")
+    data = await file.read()
+    if len(data) > config.MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Photo exceeds maximum size")
+
+    # Use the inspection's stored UUID (not the raw path param) for the folder.
+    target_dir = SERVER_PHOTOS_DIR / inspection.uuid
     target_dir.mkdir(parents=True, exist_ok=True)
-    target = target_dir / (file.filename or f"{uuidlib.uuid4().hex}.jpg")
-    target.write_bytes(await file.read())
+    target = target_dir / f"{uuidlib.uuid4().hex}{ext}"
+    target.write_bytes(data)
 
     photo = models.InspectionPhoto(inspection_id=inspection.id, file_path=str(target))
     session.add(photo)
     session.commit()
-    return {"stored": str(target), "inspection_uuid": inspection_uuid}
+    return {"stored": str(target), "inspection_uuid": inspection.uuid}
 
 
 # --- History, findings, corrective actions --------------------------------

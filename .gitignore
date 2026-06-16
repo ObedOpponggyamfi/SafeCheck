@@ -18,6 +18,11 @@ data/*.db
 data/*.sqlite
 data/*.sqlite3
 data/photos/
+data/server_photos/
+data/logs/
+
+# --- Local environment overrides ---
+.env
 
 # --- Generated reports ---
 reports_output/

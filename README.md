@@ -65,6 +65,17 @@ machinery types) is rendered by the same Yes/No/N/A interface.
 
 ## Getting started
 
+### Windows one-click scripts (recommended)
+
+```bat
+setup.bat        :: creates .venv, installs dependencies, copies .env
+run_app.bat      :: launches the field application
+run_server.bat   :: launches the sync server (http://127.0.0.1:8077)
+run_tests.bat    :: runs the full test suite
+```
+
+### Manual (any platform)
+
 ```powershell
 # 1. (Optional) create a virtual environment
 python -m venv .venv
@@ -73,9 +84,16 @@ python -m venv .venv
 # 2. Install dependencies
 python -m pip install -r requirements.txt
 
-# 3. Launch the field application (creates and seeds the local database)
+# 3. (Optional) configure — defaults work out of the box
+copy .env.example .env
+
+# 4. Launch the field application (creates and seeds the local database)
 python run_app.py
 ```
+
+The field workflow: **pick a checklist → select the asset → answer Yes/No/N-A
+(answers auto-save) → Review → Submit → Success**. Drafts can be resumed any time
+from **History**. Logs are written to `data/logs/safecheck.log`.
 
 ### Synchronisation server (optional)
 
@@ -137,7 +155,20 @@ From the **Inspection History** screen you can export a per-inspection **PDF**
 report or four Excel reports (register, No Go, failed items, asset history).
 Files are written to `reports_output/` and opened automatically.
 
+**Reliability & enterprise UX hardening**
+
+- ✅ Atomic submission (result + findings + sync queue + audit log in one
+  transaction) with rollback, post-commit verification and idempotency
+- ✅ Draft editing — resume any draft from History with full prefill
+- ✅ Dedicated Review and Success screens; duplicate-click-guarded Submit
+- ✅ Restrained industrial palette; neutral Yes/No/N-A buttons (only the
+  selected answer is emphasised); online/offline + last-sync on the home header
+- ✅ Structured rotating-file logging (`data/logs/safecheck.log`) and audit log
+- ✅ Windows scripts (`setup.bat`, `run_app.bat`, `run_server.bat`,
+  `run_tests.bat`), `.env.example`, secure server photo uploads
+
 ## Status
 
-✅ Phase One and Phase Two complete (19 automated tests). The most important
-requirement remains **simplicity for field users**.
+✅ Phase One, Phase Two and the reliability/UX hardening pass are complete
+(**27 automated tests**, all green). The most important requirement remains
+**simplicity for field users**.

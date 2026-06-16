@@ -1,6 +1,10 @@
 # Normalise line endings: text files use LF in the repository.
 * text=auto eol=lf
 
+# Windows batch scripts need CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
 # Treat common binary assets as binary (never normalise).
 *.png binary
 *.jpg binary

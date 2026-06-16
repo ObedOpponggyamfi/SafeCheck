@@ -17,11 +17,20 @@ _configured = False
 _FORMAT = "%(asctime)s %(levelname)-7s %(name)s | %(message)s"
 
 
-def configure_logging(level: int = logging.INFO) -> None:
-    """Set up the ``safecheck`` logger tree with a rotating file + console handler."""
+def configure_logging(level: int | str | None = None) -> None:
+    """Set up the ``safecheck`` logger tree with a rotating file + console handler.
+
+    When *level* is omitted it is read from ``config.LOG_LEVEL`` (env-overridable).
+    """
     global _configured
     if _configured:
         return
+    if level is None:
+        from safecheck.config import LOG_LEVEL
+
+        level = LOG_LEVEL
+    if isinstance(level, str):
+        level = getattr(logging, level.upper(), logging.INFO)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
     formatter = logging.Formatter(_FORMAT)
