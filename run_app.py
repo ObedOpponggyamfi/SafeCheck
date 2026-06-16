@@ -40,9 +40,19 @@ def _use_os_trust_store() -> None:
 
 def run() -> None:
     """Prepare the database, then launch the desktop window."""
+    from safecheck.core.logging_config import configure_logging, get_logger
+
+    configure_logging()
+    log = get_logger("startup")
+    log.info("SafeCheck field app starting…")
     _use_os_trust_store()
-    init_db()
-    seed_all()
+    try:
+        init_db()
+        seed_all()
+        log.info("Database initialised and seeded.")
+    except Exception:
+        log.exception("Fatal error during startup database initialisation.")
+        raise
     ft.run(main)
 
 

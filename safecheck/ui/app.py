@@ -18,6 +18,8 @@ from safecheck.ui.views.inspection import InspectionScreen
 from safecheck.ui.views.login import build_login
 from safecheck.ui.views.pending_sync import build_pending_sync
 from safecheck.ui.views.profile import build_profile
+from safecheck.ui.views.review import build_review
+from safecheck.ui.views.success import build_success
 
 # Stores the last username when "Remember me" is ticked.
 REMEMBER_FILE = DATA_DIR / "last_user.txt"
@@ -124,9 +126,15 @@ class SafeCheckApp:
     def show_profile(self, message=None) -> None:
         self._render(build_profile(self, message), active="profile")
 
-    def show_inspection(self, template_id: int) -> None:
-        screen = InspectionScreen(self, template_id)
+    def show_inspection(self, template_id: int | None = None, inspection_id: int | None = None) -> None:
+        screen = InspectionScreen(self, template_id=template_id, inspection_id=inspection_id)
         self._render(screen.build())
+
+    def show_review(self, inspection_id: int, message=None) -> None:
+        self._render(build_review(self, inspection_id, message))
+
+    def show_success(self, inspection_id: int) -> None:
+        self._render(build_success(self, inspection_id))
 
     # -- Bottom navigation bar --------------------------------------------
     def _bottom_nav(self, active: str) -> ft.Control:

@@ -95,7 +95,11 @@ def build_history(app, message=None) -> ft.Control:
                     ],
                     spacing=4, expand=True,
                 ),
-                theme.outline_button("PDF", (lambda iid: lambda e: _pdf(iid))(row["id"]), height=42),
+                (theme.outline_button("Resume",
+                                      (lambda iid: lambda e: app.show_inspection(inspection_id=iid))(row["id"]),
+                                      height=42)
+                 if row["sync"] == "Draft"
+                 else theme.outline_button("PDF", (lambda iid: lambda e: _pdf(iid))(row["id"]), height=42)),
             ],
             vertical_alignment=ft.CrossAxisAlignment.CENTER, spacing=10,
         )))

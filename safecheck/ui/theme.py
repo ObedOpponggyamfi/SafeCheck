@@ -14,20 +14,26 @@ from typing import Callable
 import flet as ft
 
 # --- Palette --------------------------------------------------------------
-PRIMARY = "#0D47A1"        # Brand navy
-PRIMARY_DARK = "#08306B"
-BG = "#EEF2F7"             # App background
-CARD = "#FFFFFF"
-TEXT = "#1A2233"
-MUTED = "#64707D"
-BORDER = "#D9E0E8"
+# Restrained industrial system: deep navy/charcoal navigation, white/soft-grey
+# surfaces, and status colours used only to communicate state and action.
+PRIMARY = "#14293D"        # Deep navy-charcoal (navigation, primary actions)
+PRIMARY_DARK = "#0C1B29"
+ACCENT = "#1C5D99"         # Controlled blue accent (links, subtle highlights)
+BG = "#F3F5F7"             # App background (soft grey)
+CARD = "#FFFFFF"           # Content surfaces
+NEUTRAL_BG = "#EEF2F6"     # Unselected control surface
+TEXT = "#16202A"           # Primary text (near charcoal)
+MUTED = "#5B6B7B"          # Secondary text
+BORDER = "#E2E7EC"         # Neutral borders
 WHITE = "#FFFFFF"
 
-# Status colours mandated by the specification.
-GREEN = "#2E7D32"   # Satisfactory / Yes / Fit for Use / Entry Approved
-AMBER = "#EF8A00"   # Requires attention
-RED = "#C62828"     # No Go / Entry Denied / No
-GREY = "#90A0AD"    # Not applicable / N/A
+# Status colours — used sparingly, only for state and action.
+GREEN = "#1E7E34"   # Satisfactory / Yes / Fit for Use / Entry Approved / online
+AMBER = "#C77700"   # Requires attention
+RED = "#C0392B"     # Danger / No Go / Entry Denied / No / failures
+GREY = "#7B8794"    # Not applicable / N/A
+ONLINE = GREEN
+OFFLINE = MUTED
 
 RESULT_COLORS = {
     "Fit for Use": GREEN,
@@ -46,6 +52,30 @@ def result_color(result: str | None) -> str:
 def fmt_dt(dt) -> str:
     """Format a datetime for display, tolerating ``None``."""
     return dt.strftime("%d %b %Y, %H:%M") if dt else "—"
+
+
+def answer_button(label: str, color: str, on_click, selected: bool = False) -> ft.Container:
+    """A large Yes/No/N-A button — neutral until selected, then strong colour.
+
+    Per the design direction, unselected buttons stay neutral so only the chosen
+    answer receives emphasis.
+    """
+    label_text = ft.Text(label, size=16, weight=ft.FontWeight.BOLD,
+                         color=WHITE if selected else MUTED)
+    return ft.Container(
+        content=label_text, height=54, expand=True, border_radius=10,
+        alignment=ft.Alignment.CENTER,
+        bgcolor=color if selected else NEUTRAL_BG,
+        border=None if selected else ft.Border.all(1, BORDER),
+        ink=True, on_click=on_click,
+    )
+
+
+def style_answer_button(btn: ft.Container, color: str, selected: bool) -> None:
+    """Restyle an existing answer button in place for its selected state."""
+    btn.bgcolor = color if selected else NEUTRAL_BG
+    btn.border = None if selected else ft.Border.all(1, BORDER)
+    btn.content.color = WHITE if selected else MUTED
 
 
 # --- Small helpers --------------------------------------------------------
