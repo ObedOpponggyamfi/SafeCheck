@@ -24,8 +24,8 @@ def build_profile(app, message=None) -> ft.Control:
             ft.Row(
                 [
                     ft.Container(
-                        content=ft.Icon(ft.Icons.PERSON, color=theme.PRIMARY, size=34),
-                        bgcolor="#E8F0FE", border_radius=30, padding=ft.Padding.all(14),
+                        content=ft.Icon(ft.Icons.PERSON, color=theme.ON_GOLD, size=34),
+                        bgcolor=theme.GOLD, border_radius=30, padding=ft.Padding.all(14),
                     ),
                     ft.Column(
                         [

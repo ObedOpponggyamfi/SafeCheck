@@ -36,8 +36,8 @@ def _status_header(app, online: bool, last_sync) -> ft.Control:
     )
     return theme.card(ft.Row(
         [
-            ft.Container(content=ft.Icon(ft.Icons.VERIFIED_USER, color=theme.WHITE, size=26),
-                         bgcolor=theme.PRIMARY, border_radius=12, padding=ft.Padding.all(10)),
+            ft.Container(content=ft.Icon(ft.Icons.VERIFIED_USER, color=theme.ON_GOLD, size=26),
+                         bgcolor=theme.GOLD, border_radius=12, padding=ft.Padding.all(10)),
             ft.Column(
                 [ft.Text("SafeCheck", size=16, weight=ft.FontWeight.BOLD, color=theme.TEXT),
                  ft.Text("Safety Inspection Management", size=11, color=theme.MUTED),

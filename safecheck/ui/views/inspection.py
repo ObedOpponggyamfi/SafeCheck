@@ -69,7 +69,7 @@ class InspectionScreen:
         self.header_fields: dict[str, ft.TextField] = {}
         self.banner_holder = ft.Container(visible=False)
         self.asset_info = ft.Text("No asset selected", size=13, color=theme.MUTED)
-        self.progress_text = ft.Text("0 of 0 completed", size=13, color=theme.WHITE,
+        self.progress_text = ft.Text("0 of 0 completed", size=13, color=theme.GOLD,
                                      weight=ft.FontWeight.BOLD)
         self.general_comment = ft.TextField(
             label="General comment (optional)", multiline=True, min_lines=2, max_lines=4,
@@ -135,13 +135,13 @@ class InspectionScreen:
                 content=ft.Column(
                     [
                         ft.Text(asset.asset_number, size=14, weight=ft.FontWeight.BOLD,
-                                color=theme.WHITE if selected else theme.TEXT),
+                                color=theme.ON_GOLD if selected else theme.TEXT),
                         ft.Text(asset.registration_number or asset.description or "", size=11,
-                                color=theme.WHITE if selected else theme.MUTED),
+                                color=theme.ON_GOLD if selected else theme.MUTED),
                     ],
                     spacing=2,
                 ),
-                bgcolor=theme.PRIMARY if selected else theme.NEUTRAL_BG,
+                bgcolor=theme.GOLD if selected else theme.NEUTRAL_BG,
                 border=None if selected else ft.Border.all(1, theme.BORDER), border_radius=12,
                 padding=ft.Padding.all(12),
                 on_click=(lambda a: lambda e: self._select_asset(a))(asset), ink=True,
@@ -248,10 +248,10 @@ class InspectionScreen:
         inspection_service.set_asset(self.session, self.inspection, asset)
         for asset_id, btn in self.asset_buttons.items():
             selected = asset_id == asset.id
-            btn.bgcolor = theme.PRIMARY if selected else theme.NEUTRAL_BG
+            btn.bgcolor = theme.GOLD if selected else theme.NEUTRAL_BG
             btn.border = None if selected else ft.Border.all(1, theme.BORDER)
             for text_control in btn.content.controls:
-                text_control.color = theme.WHITE if selected else theme.TEXT
+                text_control.color = theme.ON_GOLD if selected else theme.TEXT
         self.asset_info.value = (f"Selected: {asset.asset_number}  •  "
                                  f"{asset.registration_number or '—'}")
         self.asset_info.color = theme.TEXT

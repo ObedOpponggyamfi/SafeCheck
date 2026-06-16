@@ -55,7 +55,8 @@ def build_login(app) -> ft.Control:
     card = ft.Container(
         content=ft.Column(
             [
-                ft.Icon(ft.Icons.VERIFIED_USER, color=theme.PRIMARY, size=48),
+                ft.Container(content=ft.Icon(ft.Icons.VERIFIED_USER, color=theme.ON_GOLD, size=40),
+                             bgcolor=theme.GOLD, border_radius=16, padding=ft.Padding.all(14)),
                 ft.Text(APP_NAME, size=26, weight=ft.FontWeight.BOLD, color=theme.PRIMARY),
                 ft.Text("Offline safety inspections", size=13, color=theme.MUTED),
                 ft.Container(height=8),

@@ -72,7 +72,7 @@ def build_dashboard(app, message=None) -> ft.Control:
         _section("Results", data["results"], theme.result_color),
         _section("Synchronisation", data["sync"], lambda s: _SYNC_COLORS.get(s, theme.MUTED)),
         _section("Findings by status", findings_pairs, lambda s: _FINDING_COLORS.get(s, theme.MUTED)),
-        _section("Top checklists", data["by_checklist"], lambda _l: theme.PRIMARY),
+        _section("Top checklists", data["by_checklist"], lambda _l: theme.GOLD_DARK),
         ft.Container(height=8),
     ]
     body = ft.Column(body_controls, spacing=12, scroll=ft.ScrollMode.AUTO, expand=True)

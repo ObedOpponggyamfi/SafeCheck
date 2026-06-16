@@ -14,22 +14,28 @@ from typing import Callable
 import flet as ft
 
 # --- Palette --------------------------------------------------------------
-# Restrained industrial system: deep navy/charcoal navigation, white/soft-grey
-# surfaces, and status colours used only to communicate state and action.
-PRIMARY = "#14293D"        # Deep navy-charcoal (navigation, primary actions)
-PRIMARY_DARK = "#0C1B29"
-ACCENT = "#1C5D99"         # Controlled blue accent (links, subtle highlights)
-BG = "#F3F5F7"             # App background (soft grey)
+# Asanko-Gold inspired industrial system: deep charcoal navigation paired with a
+# metallic gold brand accent on white/soft-grey surfaces. Gold is used as a fill
+# (with dark text) for branding and primary actions; the safety status colours
+# (green/amber/red/grey) are reserved strictly for state.
+PRIMARY = "#1C2731"        # Deep charcoal-slate (navigation, headers, text)
+PRIMARY_DARK = "#121A22"
+GOLD = "#C8A227"           # Brand gold (primary actions, logo, accents)
+GOLD_DARK = "#9A7B12"      # Gold for icons/lines on light surfaces
+GOLD_TINT = "#F6EFD6"      # Light gold chip/background tint
+ON_GOLD = "#1C2731"        # Dark text/icons placed on a gold fill
+ACCENT = GOLD
+BG = "#F4F4F2"             # App background (warm soft grey)
 CARD = "#FFFFFF"           # Content surfaces
-NEUTRAL_BG = "#EEF2F6"     # Unselected control surface
-TEXT = "#16202A"           # Primary text (near charcoal)
-MUTED = "#5B6B7B"          # Secondary text
-BORDER = "#E2E7EC"         # Neutral borders
+NEUTRAL_BG = "#EDEEEC"     # Unselected control surface
+TEXT = "#1C2731"           # Primary text (charcoal)
+MUTED = "#5E6873"          # Secondary text
+BORDER = "#E3E3DD"         # Neutral borders
 WHITE = "#FFFFFF"
 
 # Status colours — used sparingly, only for state and action.
 GREEN = "#1E7E34"   # Satisfactory / Yes / Fit for Use / Entry Approved / online
-AMBER = "#C77700"   # Requires attention
+AMBER = "#C77700"   # Requires attention (kept orange, distinct from brand gold)
 RED = "#C0392B"     # Danger / No Go / Entry Denied / No / failures
 GREY = "#7B8794"    # Not applicable / N/A
 ONLINE = GREEN
@@ -93,14 +99,20 @@ def big_button(
     label: str,
     on_click: Callable,
     *,
-    bgcolor: str = PRIMARY,
-    color: str = WHITE,
+    bgcolor: str = GOLD,
+    color: str | None = None,
     icon=None,
     expand: bool = False,
     width: int | None = None,
     height: int = 52,
 ) -> ft.Container:
-    """A large, rounded, tappable primary button."""
+    """A large, rounded, tappable primary button (gold brand fill by default).
+
+    Text colour is chosen automatically for contrast: dark on a gold fill, white
+    on any darker fill (e.g. a red destructive action).
+    """
+    if color is None:
+        color = ON_GOLD if bgcolor == GOLD else WHITE
     row_controls = []
     if icon is not None:
         row_controls.append(ft.Icon(icon, color=color, size=20))
@@ -162,6 +174,7 @@ def top_bar(title: str, on_back: Callable | None = None, action: ft.Control | No
         content=ft.Row(leading, vertical_alignment=ft.CrossAxisAlignment.CENTER, spacing=10),
         bgcolor=PRIMARY,
         padding=ft.Padding.symmetric(horizontal=16, vertical=14),
+        border=ft.Border(bottom=ft.BorderSide(3, GOLD)),  # gold brand accent line
     )
 
 
@@ -212,8 +225,8 @@ def checklist_card(name: str, subtitle: str, icon, on_click: Callable) -> ft.Con
         content=ft.Row(
             [
                 ft.Container(
-                    content=ft.Icon(icon, color=PRIMARY, size=28),
-                    bgcolor="#E8F0FE", border_radius=12, padding=ft.Padding.all(12),
+                    content=ft.Icon(icon, color=GOLD_DARK, size=28),
+                    bgcolor=GOLD_TINT, border_radius=12, padding=ft.Padding.all(12),
                 ),
                 ft.Column(
                     [
@@ -234,7 +247,7 @@ def checklist_card(name: str, subtitle: str, icon, on_click: Callable) -> ft.Con
 def banner(message: str, kind: str = "info") -> ft.Container:
     """A dismissible-looking message banner (info/success/error)."""
     palette = {
-        "info": ("#E8F0FE", PRIMARY, ft.Icons.INFO),
+        "info": ("#ECEEF1", PRIMARY, ft.Icons.INFO),
         "success": ("#E6F4EA", GREEN, ft.Icons.CHECK_CIRCLE),
         "error": ("#FDECEA", RED, ft.Icons.ERROR),
     }

@@ -162,6 +162,8 @@ class SafeCheckApp:
                 ink=True, expand=True,
                 padding=ft.Padding.symmetric(vertical=8, horizontal=0),
                 alignment=ft.Alignment.CENTER,
+                bgcolor=theme.GOLD_TINT if selected else None,
+                border=ft.Border(top=ft.BorderSide(3, theme.GOLD)) if selected else None,
             ))
         return ft.Container(
             content=ft.Row(cells, spacing=0),
